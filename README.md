@@ -46,7 +46,7 @@
 2. Запустите нужный .exe
 
 ### Скриншоты интерфейса
-![Интерфейс](images/screenshot_1.png)
-![Ошибка](images/screenshot_2.png)
+![Интерфейс](images/Screenshot_1.png)
+![Ошибка](images/Screenshot_2.png)
 
 

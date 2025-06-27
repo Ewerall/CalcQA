@@ -46,8 +46,8 @@
 2. Запустите нужный .exe
 
 ### Скриншоты интерфейса
-![Интерфейс](images/Screenshot_1.png)
-![Ошибка](images/Screenshot_2.png)
+![Интерфейс](screenshots/Screenshot_1.png)
+![Ошибка](screenshots/Screenshot_2.png)
 
 ## Дисклеймер 
 

@@ -1,18 +1,15 @@
 import tkinter as tk
-from tkinter import font, messagebox
-import sys
-import os
-import re
+from tkinter import font
+from calclogic import CalculatorLogic
 
 class ModernCalculator:
     def __init__(self, master):
         self.master = master
+        self.logic = CalculatorLogic()
         master.title("Калькулятор")
         master.configure(bg='#f0f0f0')
         master.resizable(False, False)
         
-        # set icon
-        self.set_calculator_icon(master)
         
         # fonts
         self.display_font = font.Font(family='Helvetica', size=24, weight='bold')
@@ -47,7 +44,7 @@ class ModernCalculator:
         for (text, bg_color, fg_color) in buttons:
             btn_font = self.operator_font if text in {'/', '*', '-', '+', '=', 'C', '⌫'} else self.button_font
             
-            action = lambda x=text: self.click_handler(x)
+            action = lambda x=text: self.button_click(x)
             btn = tk.Button(master, text=text, bg=bg_color, fg=fg_color, 
                            font=btn_font, **button_style, command=action)
             
@@ -67,21 +64,6 @@ class ModernCalculator:
         for i in range(1, 6):
             master.rowconfigure(i, weight=1)
 
-    # idk wth this dont work correct so todo
-    def set_calculator_icon(self, window):
-        try:
-            if getattr(sys, 'frozen', False):
-                base_path = sys._MEIPASS
-            else:
-                base_path = os.path.dirname(os.path.abspath(__file__))
-            
-            icon_path = os.path.join(base_path, "calculator.ico")
-            if os.path.exists(icon_path):
-                window.iconbitmap(icon_path)
-        except Exception as e:
-            print("Icon error:", e)
-            pass
-
     def lighten_color(self, color):
         # when you hover over the button, it becomes brighter.
         if color.startswith('#') and len(color) == 7:
@@ -94,96 +76,10 @@ class ModernCalculator:
                 pass
         return color
 
-    def is_valid_expression(self, expr):
-        # check if user sus and try do sus things with eval
-        if not re.match(r'^[\d+\-*/().\s×÷]+$', expr):
-            return False
-        
-        parts = re.split(r'[+\-*/(),÷×]', expr)
-        for part in parts:
-            if part.count('.') > 1:
-                return False
-        
-        if re.search(r'[+\-*/×÷]{2,}', expr):
-            return False
-            
-        return True
-
-    def is_valid_next_char(self, current, new_char):
-        # check if user stupi and try 5.5.5 + 5 or something else
-        if not current:
-            return new_char in '0123456789.(-'
-        
-        last_char = current[-1]
-        
-        if new_char == '.':
-            start_index = 0
-            for i in range(len(current)-1, -1, -1):
-                if current[i] in '+-*/(),÷×':
-                    start_index = i+1
-                    break
-            current_number = current[start_index:]
-            return '.' not in current_number
-        
-        if new_char in '+-*/×÷':
-            if new_char == '-' and last_char in '+-*/(,÷×':
-                return True
-            return last_char not in '+-*/×÷'
-        
-        if last_char == ')' and new_char.isdigit():
-            return False
-            
-        return True
-
-    def click_handler(self, key):
-        current_text = self.display.get()
-        
-        # delete 'error' 
-        if current_text == "Ошибка":
-            self.display.delete(0, tk.END)
-            current_text = ""
-
-        if key == '=':
-            # change symb
-            expression = current_text.replace('×', '*').replace('÷', '/')
-            
-            # security guard
-            if not self.is_valid_expression(expression):
-                messagebox.showerror("Ошибка", "Недопустимое выражение")
-                return
-                
-            try:
-                # very security guard!
-                result = eval(
-                    expression,
-                    {'__builtins__': None},  # not on my watch
-                    {}
-                )
-                self.display.delete(0, tk.END)
-                self.display.insert(tk.END, str(result))
-            except ZeroDivisionError:
-                messagebox.showerror("Ошибка", "Деление на ноль невозможно")
-                self.display.delete(0, tk.END)
-            except Exception as e:
-                messagebox.showerror("Ошибка", "Неправильный ввод")
-                self.display.delete(0, tk.END)
-                
-        elif key == 'C':
-            self.display.delete(0, tk.END)
-            
-        elif key == '⌫':
-            if current_text:
-                self.display.delete(len(current_text) - 1)
-                
-        else:
-            # todo
-            display_key = key
-            if key == '*': display_key = '×'
-            elif key == '/': display_key = '÷'
-            
-            # small security guard
-            if self.is_valid_next_char(current_text, key):
-                self.display.insert(tk.END, display_key)
+    def button_click(self, char):
+        self.logic.click_handler(char)
+        self.display.delete(0, tk.END)
+        self.display.insert(tk.END, self.logic.get_display_value())
 
 if __name__ == '__main__':
     root = tk.Tk()

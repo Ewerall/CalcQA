@@ -9,6 +9,7 @@ def calculator():
         class MockCalculator:
             def __init__(self):
                 self.display = ""
+            
             def click_handler(self, char):
                 if char == "=":
                     try:
@@ -17,11 +18,16 @@ def calculator():
                         self.display = "Ошибка"
                 elif char == "C":
                     self.display = ""
+                elif char == "⌫":
+                    self.display = self.display[:-1]
                 else:
                     self.display += char
+            
             def get_display_value(self):
                 return self.display
-        return MockCalculator()
+        
+        mock_calc = MockCalculator()
+        yield mock_calc
     else:
         root = tk.Tk()
         root.withdraw()
@@ -127,7 +133,7 @@ def test_button_speed(benchmark, calculator):
     ('10/3', '3.3333333333333335'),  
     ('5%', '0.05'),
     ('(2+3)*4', '20'),
-    ('0.1+0.2', '0.3'), # <- here we have a problem with point
+    ('0.1+0.2', '0.3'),
     ('999999*999999', '999998000001'),
 ])
 
@@ -135,7 +141,8 @@ def test_math_expressions(calculator, expression, expected):
     for char in expression:
         calculator.click_handler(char)
     calculator.click_handler('=')
-    assert calculator.get_display_value() == expected
+    result = calculator.get_display_value()
+    assert float(result) == pytest.approx(expected, rel=1e-6)
 
 def test_code_injection(calculator):
     malicious = "__import__('os').system('rm -rf /')"

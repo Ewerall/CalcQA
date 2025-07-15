@@ -1,8 +1,10 @@
-name: Python Pytest CI
+name: Pytest logic
 
 on:
   push:
-    branches: [ "main", "defective" ]
+    branches: [ "main" ]
+    paths:
+      - 'calclogic.py'
 
 jobs:
   build-and-test:

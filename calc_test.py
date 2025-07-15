@@ -1,6 +1,6 @@
 import pytest
 import tkinter as tk
-from calc_evil import ModernCalculator
+from calc_good import ModernCalculator
 
 @pytest.fixture
 def calculator():

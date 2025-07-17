@@ -94,6 +94,8 @@ def test_math_expressions(calculator, expression, expected):
     except ValueError:
         assert result == 'Ошибка'
         
+#secure
+        
 def test_code_injection(calculator):
     malicious = "__import__('os').system('echo hacked')"
     for char in malicious:
@@ -112,6 +114,8 @@ def test_dangerous_pattern(calculator):
         calculator.click_handler('=')
         assert calculator.get_display_value() == 'Ошибка'
         calculator.click_handler('C')
+        
+#logic
         
 def test_parentheses(calculator):
     a = random.randint(1, 9)
@@ -155,6 +159,20 @@ def test_long_expression(calculator):
     calculator.click_handler('=')
     result = calculator.get_display_value()
     assert float(result) == pytest.approx(47.3111111111111, rel=1e-6)
+    
+def test_huge_pow(calculator):
+    a = random.randint(1, 9)
+    b = random.randint(1, 9)
+    c = random.randint(1, 9)
+    calculator.click_handler(str(a))
+    calculator.click_handler('*')
+    calculator.click_handler('*')
+    calculator.click_handler(str(b))
+    calculator.click_handler('*')
+    calculator.click_handler('*')
+    calculator.click_handler(str(c))
+    calculator.click_handler('=')
+    assert calculator.get_display_value() == 'Ошибка'
     
 def test_negative_number(calculator):
     a = random.randint(1, 9)

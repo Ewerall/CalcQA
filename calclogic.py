@@ -4,7 +4,7 @@ class CalculatorLogic:
     def __init__(self):
         self.display = ""
 
-    def click_handler(self, char): #logic buttons
+    def click_handler(self, char):
         if char == "=":
             self.calculate()
         elif char == "C":
@@ -30,13 +30,13 @@ class CalculatorLogic:
                 self.display = "Ошибка"
                 return
             
-            result = eval(expression) # math
+            result = eval(expression)
             
-            if isinstance(result, float) and result.is_integer(): # delete .00
+            if isinstance(result, float) and result.is_integer():
                 result = int(result)
             
             original_str = str(result) 
-            if len(original_str) > 14: #we dont have much space
+            if len(original_str) > 14:
                 formatted_str = "{:.8g}".format(result)
                 self.display = formatted_str
             else:
@@ -44,10 +44,9 @@ class CalculatorLogic:
         except:
             self.display = "Ошибка"
             
-     
-    def safe_calculate(self, expr): #we need to avoid large calculations, or calc doomed
+    def safe_calculate(self, expr):
         try:
-            tree = ast.parse(expr, mode='eval') # make tree with ast
+            tree = ast.parse(expr, mode='eval')
     
             pow_count = 0 # 
             

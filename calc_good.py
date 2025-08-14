@@ -10,19 +10,15 @@ class ModernCalculator:
         master.configure(bg='#f0f0f0')
         master.resizable(False, False)
         
-        
-        # fonts
         self.display_font = font.Font(family='Helvetica', size=24, weight='bold')
         self.button_font = font.Font(family='Helvetica', size=12)
         self.operator_font = font.Font(family='Helvetica', size=12, weight='bold')
         
-        # input
         self.display = tk.Entry(master, font=self.display_font, 
                                bg='#ffffff', fg='#333333', bd=0, 
                                justify='right', insertwidth=1, width=14)
         self.display.grid(row=0, column=0, columnspan=4, padx=10, pady=(15, 10), ipady=10, sticky='ew')
         
-        # button styles
         button_style = {
             'bd': 0, 
             'relief': 'flat',
@@ -39,7 +35,6 @@ class ModernCalculator:
             ('0', '#e0e0e0', '#212121'), ('.', '#e0e0e0', '#212121'), ('=', '#4caf50', 'white'), ('+', '#ff9800', 'white')
         ]
         
-        # buttons
         row, col = 1, 0
         for (text, bg_color, fg_color) in buttons:
             btn_font = self.operator_font if text in {'/', '*', '-', '+', '=', 'C', '⌫'} else self.button_font
@@ -48,7 +43,6 @@ class ModernCalculator:
             btn = tk.Button(master, text=text, bg=bg_color, fg=fg_color, 
                            font=btn_font, **button_style, command=action)
             
-            # whoosh effect
             btn.bind("<Enter>", lambda e, b=btn: b.configure(bg=self.lighten_color(b.cget('bg'))))
             btn.bind("<Leave>", lambda e, b=btn, c=bg_color: b.configure(bg=c))
             
@@ -58,14 +52,12 @@ class ModernCalculator:
                 col = 0
                 row += 1
 
-        # weight column
         for i in range(4):
             master.columnconfigure(i, weight=1)
         for i in range(1, 6):
             master.rowconfigure(i, weight=1)
 
     def lighten_color(self, color):
-        # when you hover over the button, it becomes brighter.
         if color.startswith('#') and len(color) == 7:
             try:
                 r = min(255, int(color[1:3], 16) + 40)
